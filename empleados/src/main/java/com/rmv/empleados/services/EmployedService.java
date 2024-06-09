@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rmv.empleados.controller.advice.ResourceNotFoundException;
 import com.rmv.empleados.dtos.EmployedDtos;
 import com.rmv.empleados.entitys.EmployedEntity;
 import com.rmv.empleados.mappers.EmployedMapper;
@@ -39,8 +40,13 @@ public class EmployedService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<EmployedEntity> findEmploydId(String id) {
-        return employedRepository.findById(id);
+    public EmployedDtos findEmploydId(String id) {
+        Optional<EmployedEntity> employeeOptional = employedRepository.findById(id);
+        if (employeeOptional.isPresent()) {
+            return employedMapper.toDtos(employeeOptional.get());
+        } else {
+            throw new ResourceNotFoundException("Empleado no encontrado con id: " + id);
+        }
     }
 
     private List<EmployedDtos> mapEmployedEntitiesToDtos(List<EmployedEntity> employedEntities) {
