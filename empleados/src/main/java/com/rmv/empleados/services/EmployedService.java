@@ -49,6 +49,25 @@ public class EmployedService {
         }
     }
 
+    @Transactional
+    public EmployedDtos updateEmployed(EmployedDtos employedDtos) {
+        Optional<EmployedEntity> emOptional = employedRepository.findById(employedDtos.getId());
+        if(emOptional.isPresent()) {
+            EmployedEntity entity = emOptional.get();
+
+            entity.setFirstName(employedDtos.getFirstName());
+            entity.setLastName(employedDtos.getLastName());
+            entity.setStand(employedDtos.getStand());
+            entity.setAddressDtos(employedDtos.getAddressDtos());
+
+            entity = employedRepository.save(entity);
+
+            return employedMapper.toDtos(entity);
+        } else {
+            throw new ResourceNotFoundException("Fallo al Actualizar");
+        }
+    }
+
     private List<EmployedDtos> mapEmployedEntitiesToDtos(List<EmployedEntity> employedEntities) {
         return employedEntities.stream()
             .map(employedMapper::toDtos)

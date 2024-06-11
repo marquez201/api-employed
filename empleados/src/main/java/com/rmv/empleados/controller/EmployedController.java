@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class EmployedController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<EmployedDtos>> getAllEmployeds() {
         List<EmployedDtos> list = employedService.getAllEmployed();
         return ResponseEntity.status(HttpStatus.OK).body(list);
@@ -49,6 +50,12 @@ public class EmployedController {
     public ResponseEntity<EmployedDtos> getEmployedId(@PathVariable("id") String id) {
         EmployedDtos employedDtos = employedService.findEmploydId(id);
         return ResponseEntity.status(HttpStatus.OK).body(employedDtos);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<EmployedDtos> updateEmployed(@RequestBody EmployedDtos employedDtos) {
+        EmployedDtos update = employedService.updateEmployed(employedDtos);
+        return ResponseEntity.status(HttpStatus.OK).body(update);
     }
 
 }
