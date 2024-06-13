@@ -68,6 +68,29 @@ public class EmployedService {
         }
     }
 
+
+    @Transactional
+    public String deleteEmployed(String id) {
+        Optional<EmployedEntity> emOptional = employedRepository.findById(id);
+        if (emOptional.isPresent()) {
+            EmployedEntity entity = emOptional.get();
+            employedRepository.delete(entity);
+            return "Empleado Eliminado";
+        } else {
+            throw new ResourceNotFoundException("Fallo al Eliminar");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public EmployedDtos findEmployedByEmail(String email) {
+        Optional<EmployedEntity> employedEntity = employedRepository.findByEmail(email);
+        if (employedEntity.isPresent()) {
+            return employedMapper.toDtos(employedEntity.get());
+        } else {
+            throw new ResourceNotFoundException("No se encontro");
+        }
+    }
+
     private List<EmployedDtos> mapEmployedEntitiesToDtos(List<EmployedEntity> employedEntities) {
         return employedEntities.stream()
             .map(employedMapper::toDtos)

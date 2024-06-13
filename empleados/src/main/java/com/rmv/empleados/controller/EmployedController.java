@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +47,12 @@ public class EmployedController {
         return ResponseEntity.status(HttpStatus.OK).body(listNames);
     }
 
+    @GetMapping("email/{email}")
+    public ResponseEntity<EmployedDtos> findEmail(@PathVariable("email") String email) {
+        EmployedDtos emailEmployed = employedService.findEmployedByEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(emailEmployed);
+    }
+
     @GetMapping("/user/{id}")
     public ResponseEntity<EmployedDtos> getEmployedId(@PathVariable("id") String id) {
         EmployedDtos employedDtos = employedService.findEmploydId(id);
@@ -56,6 +63,12 @@ public class EmployedController {
     public ResponseEntity<EmployedDtos> updateEmployed(@RequestBody EmployedDtos employedDtos) {
         EmployedDtos update = employedService.updateEmployed(employedDtos);
         return ResponseEntity.status(HttpStatus.OK).body(update);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deleteEmployed(@PathVariable("id") String id) {
+        String employedDtos = employedService.deleteEmployed(id);
+        return ResponseEntity.status(HttpStatus.OK).body(employedDtos);
     }
 
 }
