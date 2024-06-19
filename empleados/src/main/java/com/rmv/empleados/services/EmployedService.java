@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rmv.empleados.controller.advice.ResourceNotFoundException;
+import com.rmv.empleados.dtos.AddressDtos;
 import com.rmv.empleados.dtos.EmployedDtos;
+import com.rmv.empleados.dtos.response.ConstMessage;
 import com.rmv.empleados.entitys.EmployedEntity;
 import com.rmv.empleados.mappers.EmployedMapper;
 import com.rmv.empleados.repository.EmployedRepository;
@@ -24,7 +26,7 @@ public class EmployedService {
 
     @Transactional(readOnly = true)
     public List<EmployedDtos> getAllEmployed() {
-       return mapEmployedEntitiesToDtos(employedRepository.findAll());
+        return mapEmployedEntitiesToDtos(employedRepository.findAll());
     }
 
     @Transactional
@@ -45,29 +47,35 @@ public class EmployedService {
         if (employeeOptional.isPresent()) {
             return employedMapper.toDtos(employeeOptional.get());
         } else {
-            throw new ResourceNotFoundException("Empleado no encontrado con id: " + id);
+            throw new ResourceNotFoundException(ConstMessage.EMPLEADO_NO_ENCONTRADO.getMessage());
         }
     }
 
     @Transactional
     public EmployedDtos updateEmployed(EmployedDtos employedDtos) {
         Optional<EmployedEntity> emOptional = employedRepository.findById(employedDtos.getId());
-        if(emOptional.isPresent()) {
+        if (emOptional.isPresent()) {
             EmployedEntity entity = emOptional.get();
 
-            entity.setFirstName(employedDtos.getFirstName());
-            entity.setLastName(employedDtos.getLastName());
-            entity.setStand(employedDtos.getStand());
-            entity.setAddressDtos(employedDtos.getAddressDtos());
+            entity.setFirstName(employedDtos.getFirstName().toUpperCase());
+            entity.setLastName(employedDtos.getLastName().toUpperCase());
+            entity.setStand(employedDtos.getStand().toUpperCase());
+
+            AddressDtos addressDtos = employedDtos.getAddressDtos();
+            AddressDtos transformedAddressDtos = new AddressDtos(
+                    addressDtos.getStreet().toUpperCase(),
+                    addressDtos.getNumber(),
+                    addressDtos.getColony().toUpperCase());
+
+            entity.setAddressDtos(transformedAddressDtos);
 
             entity = employedRepository.save(entity);
 
             return employedMapper.toDtos(entity);
         } else {
-            throw new ResourceNotFoundException("Fallo al Actualizar");
+            throw new ResourceNotFoundException(ConstMessage.FALLO_AL_ACTUALIZAR.getMessage());
         }
     }
-
 
     @Transactional
     public String deleteEmployed(String id) {
@@ -75,9 +83,9 @@ public class EmployedService {
         if (emOptional.isPresent()) {
             EmployedEntity entity = emOptional.get();
             employedRepository.delete(entity);
-            return "Empleado Eliminado";
+            return ConstMessage.EMPLEADO_ELIMINADO.getMessage();
         } else {
-            throw new ResourceNotFoundException("Fallo al Eliminar");
+            throw new ResourceNotFoundException(ConstMessage.FALLO_AL_ELIMINAR.getMessage());
         }
     }
 
@@ -87,13 +95,13 @@ public class EmployedService {
         if (employedEntity.isPresent()) {
             return employedMapper.toDtos(employedEntity.get());
         } else {
-            throw new ResourceNotFoundException("No se encontro");
+            throw new ResourceNotFoundException(ConstMessage.EMPLEADO_NO_ENCONTRADO.getMessage());
         }
     }
 
     private List<EmployedDtos> mapEmployedEntitiesToDtos(List<EmployedEntity> employedEntities) {
         return employedEntities.stream()
-            .map(employedMapper::toDtos)
-            .collect(Collectors.toList());
+                .map(employedMapper::toDtos)
+                .collect(Collectors.toList());
     }
 }
