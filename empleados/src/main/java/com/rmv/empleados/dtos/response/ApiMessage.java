@@ -1,6 +1,6 @@
 package com.rmv.empleados.dtos.response;
 
-public enum ConstMessage {
+public enum ApiMessage {
     EMPLEADO_REGISTRADO("EMPLEADO REGISTRADO EXITOSAMENTE"),
     EMPLEADO_ELIMINADO("EMPLEADO ELIMINADO EXITOSAMENTE"),
     EMPLEADO_NO_ENCONTRADO("EMPLEADO NO ENCONTRADO"),
@@ -9,7 +9,7 @@ public enum ConstMessage {
 
     private final String msgString;
 
-    ConstMessage(String msgString) {
+    ApiMessage(String msgString) {
         this.msgString = msgString;
     }
 
