@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rmv.empleados.dtos.EmployedDtos;
 import com.rmv.empleados.services.EmployedService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("employed")
 public class EmployedController {
@@ -36,7 +38,7 @@ public class EmployedController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployedDtos> saveEmployeds(@RequestBody EmployedDtos employedDtos) {
+    public ResponseEntity<EmployedDtos> saveEmployeds(@ Valid @RequestBody EmployedDtos employedDtos) {
         logger.info("****ENPOINT POST /EMPLOYED [DTOS: {}]****", employedDtos);
         EmployedDtos save = employedService.saveEmployed(employedDtos);
         return ResponseEntity.status(HttpStatus.CREATED).body(save);
